@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ef">
+<title>Hair Style AI</title>
+<style>
+
+:root{--bg:#f7f4ef;--card:#fff;--ink:#171717;--muted:#73706b;--line:#e8e1d8;--soft:#f0ebe4;--accent:#171717;--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif}
+button,input{font:inherit}.top{max-width:1060px;margin:auto;padding:22px 18px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;font-size:22px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.mode{font-size:11px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 10px}
+main{max-width:1060px;margin:auto;padding:0 14px 70px}.hero{min-height:310px;background:#191919;color:#fff;border-radius:30px;padding:38px;display:flex;justify-content:space-between;gap:30px;align-items:end;overflow:hidden}.hero h1{font-size:clamp(34px,6vw,66px);line-height:1.04;margin:12px 0}.hero p{color:#d2d2d2;max-width:650px;line-height:1.8}.eyebrow{font-size:11px;letter-spacing:.18em}.rule{min-width:250px;background:#ffffff10;border:1px solid #ffffff22;padding:18px;border-radius:18px;display:grid;gap:8px;font-size:13px}.rule span:before{content:"✓ ";color:#ddd}
+.steps{position:sticky;top:8px;z-index:20;margin:14px 0;display:flex;gap:6px;padding:7px;background:#ffffffdc;backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;overflow:auto}.steps button{border:0;background:transparent;padding:9px 12px;white-space:nowrap;border-radius:10px;font-weight:700}.steps button:hover{background:var(--soft)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:14px 0;box-shadow:0 8px 30px #00000008}.sectionHead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px}.sectionHead>div{display:flex;align-items:center;gap:12px}.sectionHead b{font-size:12px;border:1px solid var(--line);border-radius:50%;width:34px;height:34px;display:grid;place-items:center}.sectionHead h2{margin:0;font-size:22px}.sectionHead span,.hint,.micro{color:var(--muted);font-size:12px}.hint{line-height:1.7}
+.photoBox{display:block;max-width:520px;margin:20px auto;border:1px dashed #bcb5ac;border-radius:22px;aspect-ratio:4/3;overflow:hidden;background:#f2efeb;cursor:pointer}.photoBox input{display:none}.photoBox img{width:100%;height:100%;object-fit:cover}.photoBox>div{height:100%;display:grid;place-content:center;text-align:center;gap:7px;color:var(--muted)}.camera{font-size:38px;color:#222}.photoBox small{font-size:11px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.primary,.ghost{border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer}.primary{background:#171717;color:#fff}.ghost{background:var(--soft);color:#171717}.full{width:100%;margin-top:18px;padding:15px}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.q{border:1px solid var(--line);border-radius:16px;padding:14px}.q strong{display:block;margin-bottom:10px}.chips,.tabs{display:flex;gap:7px;flex-wrap:wrap}.chip,.tabs button{border:1px solid var(--line);background:#f7f5f2;border-radius:99px;padding:9px 11px;cursor:pointer}.chip.active,.tabs button.active{background:#171717;color:#fff}.field{margin:12px 0}.field label{font-size:12px;font-weight:800;display:block;margin-bottom:6px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fcfbfa}
+.hidden{display:none!important}.loading{display:flex;align-items:center;gap:10px;padding:16px;background:#f7f5f2;border-radius:14px;margin:14px 0}.loading i{width:18px;height:18px;border:2px solid #ccc;border-top-color:#111;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.analysisGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.metric{background:#f7f5f2;border-radius:14px;padding:13px}.metric small{color:var(--muted);display:block}.metric b{display:block;margin-top:6px}.recommendations{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.rec{border:1px solid var(--line);border-radius:18px;padding:16px}.score{font-size:11px;background:#eee;padding:5px 8px;border-radius:99px}.rec h4{margin:10px 0 7px}.rec ul{padding-left:18px;font-size:12px;color:var(--muted);line-height:1.6}
+.tabs{margin:16px 0}.catalog{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.style{border:2px solid transparent;background:#fafafa;border-radius:17px;overflow:hidden;cursor:pointer}.style.selected{border-color:#111}.styleVisual{aspect-ratio:1;background:radial-gradient(circle at 50% 52%,#e9dfd3 0 27%,transparent 28%),linear-gradient(145deg,#d2cbc2,#f0ece7);display:grid;place-items:start center;padding-top:18px;font-size:56px}.styleMeta{padding:11px}.styleMeta b{font-size:13px}.styleMeta small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.selectedEmpty{background:#f7f5f2;padding:13px;border-radius:13px;margin:15px 0}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.compare label{font-size:12px;font-weight:800;display:block;margin-bottom:7px}.imagePanel{aspect-ratio:1;border-radius:18px;background:#eee;display:grid;place-items:center;overflow:hidden;color:#777;text-align:center;padding:10px}.imagePanel img{width:100%;height:100%;object-fit:cover}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.products{display:grid;gap:9px}.product{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px}.product i{font-style:normal;font-size:25px}.product small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.routine{background:#f7f5f2;border-radius:16px;padding:15px}.routine ol{margin:0;padding-left:20px;line-height:1.9;font-size:13px}.order{white-space:pre-wrap;background:#191919;color:#eee;padding:18px;border-radius:16px;line-height:1.7;font-size:13px;margin-bottom:12px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(90px);background:#111;color:#fff;border-radius:99px;padding:10px 15px;font-size:12px;transition:.25s;z-index:99}.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){.hero{padding:26px;display:block}.rule{margin-top:22px}.qgrid,.two{grid-template-columns:1fr}.analysisGrid{grid-template-columns:1fr 1fr}.recommendations{grid-template-columns:1fr}.catalog{grid-template-columns:1fr 1fr}.compare{grid-template-columns:1fr}.card{padding:18px}.sub{display:none}}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="brand">Hair Style AI</div>
+    <div class="sub">自分の髪を知る。似合う髪型を試す。美容師にそのまま見せる。</div>
+  </div>
+  <span id="modeBadge" class="mode">確認中</span>
+</header>
+<div style="max-width:1060px;margin:0 auto 10px;padding:0 14px">
+  <div style="background:#fff2c7;border:1px solid #ead58b;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.6">
+    <strong>試運転モード</strong>：画面・入力・提案ロジック・カタログ・共有文面を確認できます。
+    写真の本物のAI解析と髪型画像編集だけは、このファイル単体では行いません。
+  </div>
+</div>
+
+<main>
+<section class="hero">
+  <div>
+    <span class="eyebrow">FULL VERSION</span>
+    <h1>自撮り1枚から、<br>髪型選びを最後まで。</h1>
+    <p>顔型・現在の髪の特徴・自己申告を合わせて3スタイルを提案。試着、スタイリング剤、セット手順、美容師向けオーダーまでまとめます。</p>
+  </div>
+  <div class="rule">
+    <strong>このアプリの生成ルール</strong>
+    <span>本人の顔を変えない</span>
+    <span>元写真より毛量を増やさない</span>
+    <span>実際に再現しやすい髪型を優先</span>
+  </div>
+</section>
+
+<nav class="steps" id="stepsNav">
+  <button data-go="photo">1 写真</button><button data-go="questions">2 質問</button>
+  <button data-go="analysis">3 診断</button><button data-go="catalog">4 髪型</button>
+  <button data-go="tryon">5 試着</button><button data-go="finish">6 仕上げ</button>
+</nav>
+
+<section class="card" id="photo">
+  <div class="sectionHead"><div><b>01</b><h2>自撮り</h2></div><span>顔全体＋髪全体</span></div>
+  <p class="hint">正面に近く、顔全体・前髪・頭頂部・サイドが確認できる明るい写真を使ってください。</p>
+  <label class="photoBox" id="photoBox">
+    <input id="photoInput" type="file" accept="image/*" capture="user">
+    <input id="libraryInput" type="file" accept="image/*" style="display:none">
+    <img id="photoImg" hidden>
+    <div id="photoEmpty"><div class="camera">＋</div><strong>写真を撮る / 選ぶ</strong><small>JPEG / PNG / HEIC対応はブラウザ環境によります</small></div>
+  </label>
+  <div class="actions"><button class="primary" id="chooseLibrary">🖼 写真ライブラリから選ぶ</button><button class="ghost" id="removePhoto">写真を消す</button><span id="photoStatus"></span></div>
+</section>
+
+<section class="card" id="questions">
+ <div class="sectionHead"><div><b>02</b><h2>かんたん質問</h2></div><span>自己申告を優先</span></div>
+ <div id="questionGrid" class="qgrid"></div>
+ <div class="field"><label>なりたい印象（任意）</label><input id="impression" placeholder="例：清潔感、柔らかい、モード、仕事向け"></div>
+ <div class="field"><label>避けたいこと（任意）</label><input id="avoid" placeholder="例：前髪を短くしたくない、朝のセット5分以内"></div>
+ <button class="primary full" id="diagnose">✨ AI診断して3つ提案する</button>
+ <p class="micro">写真はAI解析時にサーバー経由でAPIへ送信されます。このサンプルは写真をデータベース保存しません。</p>
+</section>
+
+<section class="card hidden" id="analysis">
+ <div class="sectionHead"><div><b>03</b><h2>診断結果</h2></div><span id="analysisConfidence"></span></div>
+ <div id="analysisLoading" class="loading hidden"><i></i><span>顔型と髪の状態を確認しています…</span></div>
+ <div id="analysisBody"></div>
+ <h3>似合いやすい3スタイル</h3>
+ <div id="recommendations" class="recommendations"></div>
+</section>
+
+<section class="card" id="catalog">
+ <div class="sectionHead"><div><b>04</b><h2>ヘアカタログ</h2></div><span>提案以外も選択可能</span></div>
+ <div id="tabs" class="tabs"></div>
+ <div id="catalogGrid" class="catalog"></div>
+</section>
+
+<section class="card" id="tryon">
+ <div class="sectionHead"><div><b>05</b><h2>自分の顔で試着</h2></div><span>AI画像編集</span></div>
+ <div id="selectedStyle" class="selectedEmpty">先に髪型を選択してください。</div>
+ <div class="compare">
+   <div><label>元の写真</label><div class="imagePanel" id="originalPanel">写真未登録</div></div>
+   <div><label>試着イメージ</label><div class="imagePanel" id="generatedPanel">まだ生成していません</div></div>
+ </div>
+ <button class="primary full" id="generateTryon">🪞 選択中の髪型を自分の顔で試す</button>
+ <div id="tryonLoading" class="loading hidden"><i></i><span>本人の顔を維持して髪型だけを生成しています…</span></div>
+ <p class="micro">生成画像は完成を保証するものではなく、美容師との相談用イメージです。</p>
+</section>
+
+<section class="card" id="finish">
+ <div class="sectionHead"><div><b>06</b><h2>仕上げ</h2></div><span>美容室でそのまま使える</span></div>
+ <div class="two">
+   <div>
+    <h3>🧴 合うスタイリング剤 3タイプ</h3>
+    <div id="products" class="products"></div>
+   </div>
+   <div>
+    <h3>🎬 30秒セット</h3>
+    <div id="routine" class="routine"></div>
+   </div>
+ </div>
+ <h3>✂️ 美容師に見せるオーダー</h3>
+ <div id="salonOrder" class="order">髪型を選ぶと自動作成されます。</div>
+ <div class="actions"><button id="copyOrder" class="primary">オーダー文をコピー</button><button id="saveSummary" class="ghost">診断結果を保存</button></div>
+</section>
+</main>
+<div id="toast" class="toast"></div>
+<script>
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const state={photoFile:null,photoURL:null,answers:{},analysis:null,selected:null,tryon:null,mode:"demo"};
+const questionDefs=[
+ ["length","髪の長さ",["短め","普通","長め"]],
+ ["volume","髪の量（自分の感覚）",["少なめ","普通","多め"]],
+ ["thickness","髪の太さ（自分の感覚）",["細め","普通","太め"]],
+ ["concern","普段の悩み",["特になし","ぺたんこになりやすい","広がりやすい","うねり・クセが気になる"]],
+ ["stylingTime","朝のセット時間",["ほぼ無し","5分以内","10分程度","時間をかけられる"]],
+ ["bangs","前髪の希望",["おまかせ","残したい","上げたい","分けたい"]]
+];
+const catalog={
+"トレンド":[
+{name:"ニュアンスレイヤー",category:"ミディアム",icon:"〰",description:"顔まわりに自然な動き。重さを残しながら調整しやすい。"},
+{name:"センターパート",category:"ミディアム",icon:"⌁",description:"縦のラインと顔まわりの抜け感を作りやすい。"},
+{name:"コンパクトマッシュ",category:"ショート",icon:"◒",description:"丸みを残しつつサイドと襟足を締める。"},
+{name:"ソフトウルフ",category:"ミディアム",icon:"≋",description:"トップを盛りすぎず、毛先の動きで立体感を出す。"}
+],
+"ショート":[
+{name:"ナチュラルショート",category:"ショート",icon:"◜",description:"清潔感がありセット負担が少ない。"},
+{name:"アップバング",category:"ショート",icon:"↟",description:"前髪を上げ、顔まわりをすっきり見せる。"},
+{name:"ショートマッシュ",category:"ショート",icon:"◒",description:"丸みを活かしつつ量感調整しやすい。"},
+{name:"タイトショート",category:"ショート",icon:"⌒",description:"サイドの膨らみを抑えやすい。"}
+],
+"ミディアム":[
+{name:"ミディアムレイヤー",category:"ミディアム",icon:"≋",description:"動きとまとまりを両立しやすい。"},
+{name:"外ハネミディ",category:"ミディアム",icon:"⤴",description:"毛先の動きで軽さを出す。"},
+{name:"くびれレイヤー",category:"ミディアム",icon:"⌇",description:"顔まわりと首元にメリハリ。"},
+{name:"ナチュラルウェーブ",category:"ミディアム",icon:"≈",description:"クセを活かしやすい柔らかな形。"}
+],
+"ロング":[
+{name:"ロングレイヤー",category:"ロング",icon:"║",description:"長さを残し、毛先中心で軽さを出す。"},
+{name:"フェイスレイヤー",category:"ロング",icon:"〽",description:"顔まわりだけに動きを作る。"},
+{name:"まとまりロング",category:"ロング",icon:"│",description:"ツヤと収まりを優先する。"},
+{name:"ゆるウェーブロング",category:"ロング",icon:"≈",description:"毛量を足さず毛流れで柔らかさを出す。"}
+]};
+
+function toast(t){const x=$("#toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+function renderQuestions(){
+ const g=$("#questionGrid");g.innerHTML="";
+ questionDefs.forEach(([key,label,vals])=>{
+   const d=document.createElement("div");d.className="q";d.innerHTML=`<strong>${label}</strong><div class="chips"></div>`;
+   vals.forEach(v=>{const b=document.createElement("button");b.className="chip";b.textContent=v;b.onclick=()=>{d.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));b.classList.add("active");state.answers[key]=v;};d.querySelector(".chips").appendChild(b)});
+   g.appendChild(d);
+ });
+}
+renderQuestions();
+
+$("#photoInput").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;state.photoFile=f;
+ if(state.photoURL)URL.revokeObjectURL(state.photoURL);state.photoURL=URL.createObjectURL(f);
+ $("#photoImg").src=state.photoURL;$("#photoImg").hidden=false;$("#photoEmpty").hidden=true;
+ $("#originalPanel").innerHTML=`<img src="${state.photoURL}">`;$("#photoStatus").textContent=`${(f.size/1024/1024).toFixed(1)} MB`;
+};
+
+$("#chooseLibrary").onclick=()=>$("#libraryInput").click();
+$("#libraryInput").onchange=e=>{
+ const f=e.target.files[0];if(!f)return;state.photoFile=f;
+ if(state.photoURL)URL.revokeObjectURL(state.photoURL);state.photoURL=URL.createObjectURL(f);
+ $("#photoImg").src=state.photoURL;$("#photoImg").hidden=false;$("#photoEmpty").hidden=true;
+ $("#originalPanel").innerHTML=`<img src="${state.photoURL}">`;$("#photoStatus").textContent=`${(f.size/1024/1024).toFixed(1)} MB`;
+};
+$("#removePhoto").onclick=()=>{state.photoFile=null;$("#photoInput").value="";$("#libraryInput").value="";$("#photoImg").hidden=true;$("#photoEmpty").hidden=false;$("#originalPanel").textContent="写真未登録";$("#photoStatus").textContent="";};
+
+$$("[data-go]").forEach(b=>b.onclick=()=>document.getElementById(b.dataset.go).scrollIntoView({behavior:"smooth"}));
+
+async function checkMode(){
+  state.mode="demo";
+  $("#modeBadge").textContent="試運転モード";
+}
+checkMode();
+
+function demoAnalysis(){
+ const a=state.answers;
+ const face=["卵型","丸型","面長","ベース型"][Math.floor(Math.random()*4)];
+ return {
+   faceShape:{primary:face,secondary:"中間タイプ",confidence:78,reason:"デモモードのため写真解析ではなくサンプル表示です。"},
+   hair:{currentLength:a.length||"普通",volumeEstimate:a.volume||"普通",thicknessEstimate:a.thickness||"普通",textureEstimate:a.concern==="うねり・クセが気になる"?"やや動きあり":"標準",densityNotes:"自己申告を優先して提案",bangs:a.bangs||"おまかせ",warnings:["AI未接続のデモ結果"]},
+   summary:`${a.length||"現在"}の長さを基準に、毛量を増やす必要のない再現しやすい形を優先します。`,
+   recommendations:[
+    {name:a.length==="短め"?"ナチュラルショート":"ニュアンスレイヤー",category:a.length==="短め"?"ショート":"ミディアム",score:92,why:"現在の量感を活かし、無理にボリュームを足さず形を作りやすい。",cutPoints:["顔まわりを調整","トップを軽くしすぎない","サイドの量感を整える"],stylingPoints:["少量の剤","毛流れを整える","最後に表面を調整"],avoid:["毛量を多く見せる前提の仕上げ"]},
+    {name:"センターパート",category:"ミディアム",score:87,why:"顔まわりに抜け感を作り、自然な毛流れを使える。",cutPoints:["前髪の長さを確保","耳まわりを整理","重さを残す"],stylingPoints:["根元を自然に分ける","オイル少量","毛先を整える"],avoid:["トップを過度に膨らませる"]},
+    {name:a.concern==="広がりやすい"?"タイトショート":"ソフトウルフ",category:a.concern==="広がりやすい"?"ショート":"ミディアム",score:82,why:"悩みに合わせてシルエットを調整しやすい。",cutPoints:["膨らむ位置を調整","襟足を整える","毛先に動き"],stylingPoints:["手ぐし中心","バーム少量","必要箇所だけキープ"],avoid:["全体を均一に軽くしすぎる"]}
+   ]
+ };
+}
+$("#diagnose").onclick=async()=>{
+ if(!state.photoFile)return toast("先に自撮り写真を登録してください");
+ if(Object.keys(state.answers).length<6)return toast("6つの質問をすべて選んでください");
+ state.answers.impression=$("#impression").value.trim();state.answers.avoid=$("#avoid").value.trim();
+ $("#analysis").classList.remove("hidden");$("#analysisLoading").classList.remove("hidden");$("#analysisBody").innerHTML="";$("#recommendations").innerHTML="";
+ $("#analysis").scrollIntoView({behavior:"smooth"});
+ try{
+   if(state.mode==="ai"){
+    const fd=new FormData();fd.append("photo",state.photoFile);fd.append("answers",JSON.stringify(state.answers));
+    const r=await fetch("/api/analyze",{method:"POST",body:fd});const j=await r.json();if(!r.ok)throw new Error(j.error||"解析に失敗");
+    state.analysis=j;
+   }else state.analysis=demoAnalysis();
+   renderAnalysis();
+ }catch(e){toast(e.message);state.analysis=demoAnalysis();renderAnalysis();$("#modeBadge").textContent="AI失敗 → デモ";}
+ finally{$("#analysisLoading").classList.add("hidden")}
+};
+function renderAnalysis(){
+ const a=state.analysis;$("#analysisConfidence").textContent=`推定信頼度 ${a.faceShape?.confidence??"-"}%`;
+ $("#analysisBody").innerHTML=`<div class="analysisGrid">
+ <div class="metric"><small>顔型</small><b>${a.faceShape?.primary||"-"}</b></div>
+ <div class="metric"><small>長さ</small><b>${a.hair?.currentLength||"-"}</b></div>
+ <div class="metric"><small>毛量</small><b>${a.hair?.volumeEstimate||"-"}</b></div>
+ <div class="metric"><small>質感</small><b>${a.hair?.textureEstimate||"-"}</b></div></div>
+ <p>${a.summary||""}</p><p class="micro">${a.faceShape?.reason||""}</p>`;
+ $("#recommendations").innerHTML="";
+ (a.recommendations||[]).forEach(r=>{
+  const d=document.createElement("div");d.className="rec";d.innerHTML=`<span class="score">相性 ${r.score}%</span><h4>${r.name}</h4><p class="micro">${r.why}</p><ul>${(r.cutPoints||[]).map(x=>`<li>${x}</li>`).join("")}</ul><button class="ghost">この髪型を選ぶ</button>`;
+  d.querySelector("button").onclick=()=>selectStyle({...r,description:r.why});$("#recommendations").appendChild(d);
+ });
+}
+
+let activeCat="トレンド";
+function renderCatalog(){
+ $("#tabs").innerHTML="";Object.keys(catalog).forEach(c=>{const b=document.createElement("button");b.textContent=(c==="トレンド"?"🔥 ":"")+c;b.className=c===activeCat?"active":"";b.onclick=()=>{activeCat=c;renderCatalog()};$("#tabs").appendChild(b)});
+ $("#catalogGrid").innerHTML="";catalog[activeCat].forEach(s=>{const d=document.createElement("div");d.className="style"+(state.selected?.name===s.name?" selected":"");d.innerHTML=`<div class="styleVisual">${s.icon}</div><div class="styleMeta"><b>${s.name}</b><small>${s.description}</small></div>`;d.onclick=()=>selectStyle(s);$("#catalogGrid").appendChild(d)});
+}
+renderCatalog();
+
+function selectStyle(s){
+ state.selected=s;renderCatalog();
+ $("#selectedStyle").innerHTML=`<strong>${s.name}</strong><div class="micro">${s.description||s.why||""}</div>`;
+ updateFinish();toast(`${s.name} を選択しました`);
+ document.getElementById("tryon").scrollIntoView({behavior:"smooth"});
+}
+$("#generateTryon").onclick=async()=>{
+ if(!state.photoFile)return toast("先に写真を登録してください");
+ if(!state.selected)return toast("先に髪型を選択してください");
+ $("#tryonLoading").classList.remove("hidden");
+ try{
+   if(state.mode!=="ai"){
+     $("#generatedPanel").innerHTML=`<div style="position:relative;width:100%;height:100%"><img src="${state.photoURL}" style="filter:contrast(1.03) saturate(.92)"><div style="position:absolute;left:10px;right:10px;bottom:10px;background:#111d;color:#fff;border-radius:12px;padding:10px;font-size:12px">試運転表示：${state.selected.name}<br>本物の髪型合成はAI接続後に実行</div></div>`;
+     toast("試運転表示です。AI接続後は実際に髪型を編集します");
+     return;
+   }
+   const fd=new FormData();fd.append("photo",state.photoFile);fd.append("style",JSON.stringify(state.selected));fd.append("analysis",JSON.stringify(state.analysis||{}));
+   const r=await fetch("/api/tryon",{method:"POST",body:fd});const j=await r.json();if(!r.ok)throw new Error(j.error||"生成に失敗");
+   state.tryon=j.image;$("#generatedPanel").innerHTML=`<img src="${j.image}">`;
+ }catch(e){toast(e.message)}
+ finally{$("#tryonLoading").classList.add("hidden")}
+};
+
+function productSet(){
+ const a=state.answers,c=a.concern;
+ const arr=[
+  {i:"🫧",n:"軽めワックス / クリーム",d:"束感と毛流れ。つけすぎにくいタイプ。"},
+  {i:"💧",n:c==="広がりやすい"?"保湿バーム":"軽質感オイル",d:c==="広がりやすい"?"膨らみを抑えてまとまりを出す。":"ツヤと毛先のまとまりを補助。"},
+  {i:"🌫",n:c==="ぺたんこになりやすい"?"軽いキープスプレー":"フィニッシュスプレー",d:"必要な部分だけ固定。固めすぎない。"}
+ ];return arr;
+}
+function updateFinish(){
+ if(!state.selected)return;
+ $("#products").innerHTML=productSet().map(x=>`<div class="product"><i>${x.i}</i><div><b>${x.n}</b><small>${x.d}</small></div></div>`).join("");
+ $("#routine").innerHTML=`<ol><li><b>0〜8秒：</b>手ぐしで全体の毛流れを整える</li><li><b>8〜16秒：</b>スタイリング剤を手のひらに薄く伸ばす</li><li><b>16〜24秒：</b>中間〜毛先中心になじませる</li><li><b>24〜30秒：</b>前髪・顔まわり・表面だけ微調整</li></ol>`;
+ const a=state.analysis, s=state.selected;
+ const cuts=s.cutPoints||["顔まわりのバランスを合わせる","現在の毛量を基準に量感調整","セットしやすいシルエット"];
+ $("#salonOrder").textContent=`希望スタイル：${s.name}
+なりたい印象：${state.answers.impression||"特に指定なし"}
+現在の悩み：${state.answers.concern||"未入力"}
+前髪：${state.answers.bangs||"おまかせ"}
+朝のセット時間：${state.answers.stylingTime||"未入力"}
+
+カットで重視したい点：
+・${cuts.join("\n・")}
+
+重要：
+・現在の毛量より多く見せることを前提にしない
+・無理にボリュームを足さず、今の髪で再現できる範囲を優先
+・写真の試着イメージは参考として、実際の髪質と生え方を見て調整してください${a?.faceShape?.primary?`\n\nAI推定顔型：${a.faceShape.primary}（参考）`:""}`;
+}
+$("#copyOrder").onclick=async()=>{const t=$("#salonOrder").textContent;if(!state.selected)return toast("先に髪型を選んでください");await navigator.clipboard.writeText(t);toast("美容師向けオーダー文をコピーしました")};
+$("#saveSummary").onclick=()=>{
+ if(!state.analysis&&!state.selected)return toast("まだ保存する結果がありません");
+ const payload={createdAt:new Date().toISOString(),answers:state.answers,analysis:state.analysis,selectedStyle:state.selected};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="hair-style-ai-result.json";a.click();URL.revokeObjectURL(a.href);
+};
+
+</script>
+</body>
+</html>
